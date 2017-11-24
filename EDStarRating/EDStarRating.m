@@ -265,25 +265,32 @@
 #pragma mark Mouse/Touch Interaction
 -(float) starsForPoint:(CGPoint)point
 {
-    float stars=0;
-    for( NSInteger i=0; i<maxRating; i++ )
+    float stars = 0;
+    for( NSInteger i = 0; i < maxRating; i++ )
     {
-        CGPoint p =[self pointOfStarAtPosition:i highlighted:NO];
+        CGPoint p = [self pointOfStarAtPosition:i highlighted:NO];
         if( point.x > p.x )
         {
-            float increment=1.0;
+            float increment = 1.0;
             
             if( self.displayMode == EDStarRatingDisplayHalf  )
             {
                 float difference = (point.x - p.x)/self.starImage.size.width;
                 if( difference < self.halfStarThreshold )
                 {
-                    increment=0.5;
+                    increment = 0.5;
                 }
             }
-            stars+=increment;
+            stars += increment;
         }
     }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(starsSelectionChanged:rating:)] )
+        [self.delegate starsSelectionChanged:self rating:stars];
+    
+    if (self.returnBlock)
+        self.returnBlock(stars);
+    
     return stars;
 }
 
@@ -348,11 +355,11 @@
     if( !editable )
         return;
     
-    if( self.delegate && [self.delegate respondsToSelector:@selector(starsSelectionChanged:rating:)] )
-        [self.delegate starsSelectionChanged:self rating:self.rating];
-    
-    if( self.returnBlock)
-        self.returnBlock(self.rating);
+//    if( self.delegate && [self.delegate respondsToSelector:@selector(starsSelectionChanged:rating:)] )
+//        [self.delegate starsSelectionChanged:self rating:self.rating];
+//
+//    if( self.returnBlock)
+//        self.returnBlock(self.rating);
     
 }
 
